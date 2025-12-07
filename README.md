@@ -20,8 +20,8 @@
 
 # Brain Tumour Detection using Quantum Convolutional Neural Networks (QCNN)
 <p>
-This project demonstrates a hybrid **Quantum + Classical** deep learning model
-for **brain tumour classification** using MRI images.
+This project demonstrates a hybrid Quantum + Classical deep learning model
+for brain tumour classification using MRI images.
 The architecture uses EfficientNet-B0 + a 4-qubit quantum variational layer.
 </p>
 
