@@ -26,6 +26,7 @@ The architecture uses EfficientNet-B0 + a 4-qubit quantum variational layer.
 </p>
 
 ---
+
 ##  Motivation
 <p>
 Accurate brain tumour detection from MRI scans can speed up diagnosis and improve patient outcomes.  
@@ -41,7 +42,9 @@ This project explores a hybrid approach — classical convolutional feature extr
 - Gradio UI for predictions
 - Safe-cleaning of model checkpoints
 - GPU supported
+
 ---
+
 ##  Key Performance Highlights
 
 - Achieved **high accuracy** on binary MRI tumour classification  
@@ -121,6 +124,8 @@ Brain-Tumor-QCNN/
 
 ### Author
 **S. Karthik (2025)** – Brain Tumour Detection using QCNN
+
+---
 
 ##  Installation
 
