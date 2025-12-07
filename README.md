@@ -1,29 +1,6 @@
 
 
 
-<p align="center">
-  <img src="assets/banner.png" alt="Brain Tumour QCNN Banner" width="100%">
-</p>
-
-<h1 align="center">🧠 Brain Tumour Detection using Quantum Convolutional Neural Networks (QCNN)</h1>
-
-<p align="center">
-  Hybrid Quantum–Classical Deep Learning Model • MRI Tumour Classification
-</p>
-
-<p align="center">
-  
-  ![Python](https://img.shields.io/badge/Python-3.8%2B-blue)
-  ![PyTorch](https://img.shields.io/badge/PyTorch-DeepLearning-orange)
-  ![PennyLane](https://img.shields.io/badge/PennyLane-Quantum-purple)
-  ![Gradio](https://img.shields.io/badge/Gradio-UI-green)
-  ![Status](https://img.shields.io/badge/Status-Active-success)
-  ![Platform](https://img.shields.io/badge/Platform-Kaggle%20%7C%20GitHub-blue)
-</p>
-
----
-
-
 
 # Brain Tumour Detection using Quantum Convolutional Neural Networks (QCNN)
 
