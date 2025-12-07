@@ -23,7 +23,10 @@
 This project demonstrates a hybrid **Quantum + Classical** deep learning model
 for **brain tumour classification** using MRI images.
 The architecture uses EfficientNet-B0 + a 4-qubit quantum variational layer.
+---
+##  Motivation
 
+Accurate brain tumour detection from MRI scans can speed up diagnosis and improve patient outcomes. This project explores a hybrid approach — classical convolutional feature extractors enhanced by a small quantum variational layer — to improve classification robustness and generalization on medical images.
 ---
 
 ## Features
@@ -33,6 +36,16 @@ The architecture uses EfficientNet-B0 + a 4-qubit quantum variational layer.
 - Gradio UI for predictions
 - Safe-cleaning of model checkpoints
 - GPU supported
+---
+##  Key Performance Highlights
+
+- Achieved **high accuracy** on binary MRI tumour classification  
+- Quantum variational layer improves feature separability  
+- EfficientNet-B0 extracts strong spatial representations  
+- Stable training with smooth loss convergence  
+- Works efficiently on GPU (recommended)  
+- Produces confident predictions for both *tumour* and *no tumour* classes  
+- Lightweight architecture suitable for deployment  
 
 ---
 
@@ -50,7 +63,7 @@ Utilities:
 
 ---
 
-## 📌 Dataset
+##  Dataset
 Kaggle dataset by the author:
 https://www.kaggle.com/datasets/skarthik112/karthik-braindataset-mri
 
@@ -60,44 +73,63 @@ brain_Tumor_karr/
  ├── yes/    → tumour present
  └── no/     → no tumour
 ```
+---
+
+## Classification Report
+
+| Class       | Precision | Recall | F1-Score |
+|-------------|-----------|--------|----------|
+| Yes (Tumour) | 0.98      | 0.97   | 0.98     |
+| No (Normal)  | 0.99      | 0.99   | 0.99     |
+
+**Overall Accuracy:** 0.99  
 
 ---
 
-## 🧠 Sample Results
+## Sample Results
 ### Tumour Detected (YES)
 ![YES](assets/result_yes.png)
 
 ### No Tumour (NO)
 ![NO](assets/result_no.png)
 
----
-
-## 🚀 Training the Model
-```
-python train_qcnn.py
-```
-
-## 🔍 Running Predictions (Gradio)
-```
-python predict_qcnn.py
-```
 
 ---
 
-## 📁 Repository Structure
+##  Repository Structure
 ```
 Brain-Tumor-QCNN/
-├── train_qcnn.py
-├── predict_qcnn.py
-├── README.md
-├── requirements.txt
-├── .gitignore
-└── assets/
+│
+├── train_qcnn.py          
+├── predict_qcnn.py        
+├── README.md              
+├── requirements.txt       
+├── .gitignore             
+│
+└── assets/                
     ├── result_yes.png
     └── result_no.png
+
 ```
 
 ---
 
 ### Author
 **S. Karthik (2025)** – Brain Tumour Detection using QCNN
+
+##  Installation
+
+Follow the steps below to set up and run the QCNN model.
+
+###  Clone the Repository
+```bash
+git clone https://github.com/Karthik7661/Brain-Tumor-QCNN.git
+cd Brain-Tumor-QCNN
+# 2 Install Dependencies
+pip install -r requirements.txt
+# 3 Train the Model
+python train_qcnn.py
+# 4 Run the Gradio Prediction App
+python predict_qcnn.py
+```
+
