@@ -96,10 +96,10 @@ brain_Tumor_karr/
 
 ## Sample Results
 ### Tumour Detected (YES)
-![YES](assets/result_yes.png)
+![YES](assets/yes_result.png)
 
 ### No Tumour (NO)
-![NO](assets/result_no.png)
+![NO](assets/no_result.png)
 
 
 ---
