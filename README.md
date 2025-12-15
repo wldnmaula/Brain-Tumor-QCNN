@@ -115,8 +115,8 @@ Brain-Tumor-QCNN/
 ├── .gitignore             
 │
 └── assets/                
-    ├── result_yes.png
-    └── result_no.png
+    ├── yes_result.png
+    └── no_result.png
 
 ```
 
