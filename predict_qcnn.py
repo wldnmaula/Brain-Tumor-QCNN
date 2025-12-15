@@ -1,7 +1,8 @@
-# prediction_gradio.py
 
-import os
+#PRDECTION COMPLETE CODE
+import cv2
 import torch
+import numpy as np
 from PIL import Image
 import gradio as gr
 import torchvision.transforms as transforms
@@ -10,32 +11,22 @@ import torch.nn.functional as F
 import torchvision.models as models
 import pennylane as qml
 
-# safe checkpoint load (creates cleaned file if needed)
-CLEAN_CHK = "qcnn_model_clean.pth"
-RAW_CHK = "qcnn_model.pth"
+# LOAD CHECKPOINT
 
-def load_checkpoint(preferred=CLEAN_CHK, raw=RAW_CHK):
-    if os.path.exists(preferred):
-        try:
-            return torch.load(preferred, map_location="cpu", weights_only=True)
-        except Exception:
-            return torch.load(preferred, map_location="cpu")
-    if not os.path.exists(raw):
-        raise FileNotFoundError("Checkpoint not found.")
-    try:
-        ck = torch.load(raw, map_location="cpu", weights_only=False)
-    except Exception:
-        ck = torch.load(raw, map_location="cpu")
-    torch.save({"model_state": ck["model_state"], "class_names": ck["class_names"]}, preferred)
-    try:
-        return torch.load(preferred, map_location="cpu", weights_only=True)
-    except Exception:
-        return torch.load(preferred, map_location="cpu")
-
-checkpoint = load_checkpoint()
+checkpoint = torch.load(
+    "qcnn_model.pth",
+    map_location="cpu",
+    weights_only=False
+)
 class_names = checkpoint["class_names"]
+print("Loaded classes:", class_names)
 
-# quantum setup
+NO_INDEX  = class_names.index("no")
+YES_INDEX = class_names.index("yes")
+
+# QUANTUM LAYER
+
+
 n_qubits = 4
 dev = qml.device("default.qubit", wires=n_qubits)
 
@@ -48,72 +39,159 @@ def quantum_circuit(inputs, weights):
 weight_shapes = {"weights": (4, n_qubits, 3)}
 q_layer = qml.qnn.TorchLayer(quantum_circuit, weight_shapes)
 
-# model (must match training)
+# MODEL
+
+
 class HybridQCNN(nn.Module):
     def __init__(self, num_classes):
         super().__init__()
-        try:
-            self.backbone = models.efficientnet_b0(pretrained=True)
-        except Exception:
-            try:
-                weights = models.EfficientNet_B0_Weights.DEFAULT
-                self.backbone = models.efficientnet_b0(weights=weights)
-            except Exception:
-                self.backbone = models.efficientnet_b0(pretrained=False)
-        # replace first conv to accept 1 channel
-        try:
-            f = self.backbone.features[0][0]
-            self.backbone.features[0][0] = nn.Conv2d(1, f.out_channels,
-                                                     kernel_size=f.kernel_size,
-                                                     stride=f.stride,
-                                                     padding=f.padding,
-                                                     bias=(f.bias is not None))
-        except Exception:
-            self.backbone.features[0][0] = nn.Conv2d(1, 32, kernel_size=3, stride=2, padding=1, bias=False)
+        self.backbone = models.efficientnet_b0(pretrained=True)
+        self.backbone.features[0][0] = nn.Conv2d(
+            1, 32, kernel_size=3, stride=2, padding=1, bias=False
+        )
         self.backbone.classifier = nn.Identity()
         self.fc1 = nn.Linear(1280, n_qubits)
         self.q_layer = q_layer
-        self.dropout = nn.Dropout(0.5)
         self.fc2 = nn.Linear(n_qubits, num_classes)
 
     def forward(self, x):
         x = self.backbone(x)
         x = torch.tanh(self.fc1(x))
         x = self.q_layer(x)
-        x = self.dropout(x)
         x = self.fc2(x)
         return F.log_softmax(x, dim=1)
 
+# LOAD MODEL
+
+
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model = HybridQCNN(num_classes=len(class_names))
+model = HybridQCNN(len(class_names))
 model.load_state_dict(checkpoint["model_state"])
 model.to(device)
 model.eval()
 
-# preprocessing
+# GRAD-CAM
+
+class GradCAM:
+    def __init__(self, model, layer):
+        self.activations = None
+        self.gradients = None
+        layer.register_forward_hook(self._forward)
+        layer.register_backward_hook(self._backward)
+
+    def _forward(self, m, i, o):
+        self.activations = o
+
+    def _backward(self, m, gi, go):
+        self.gradients = go[0]
+
+    def generate(self, x, cls):
+        model.zero_grad()
+        out = model(x)
+        out[:, cls].backward()
+
+        weights = self.gradients.mean(dim=(2, 3), keepdim=True)
+        cam = (weights * self.activations).sum(dim=1)
+        cam = F.relu(cam)
+        cam = cam / (cam.max() + 1e-8)
+        return cam
+
+gradcam = GradCAM(model, model.backbone.features[-1])
+
+# TRANSFORM
+
+
 transform = transforms.Compose([
-    transforms.Grayscale(num_output_channels=1),
+    transforms.Grayscale(1),
     transforms.Resize((224, 224)),
     transforms.ToTensor(),
     transforms.Normalize((0.5,), (0.5,))
 ])
 
-# prediction function
-def predict(img):
-    if img is None:
-        return {c: 0.0 for c in class_names}
-    img_pil = Image.fromarray(img).convert("L")
-    img_tensor = transform(img_pil).unsqueeze(0).to(device)
-    with torch.no_grad():
-        output = model(img_tensor)
-        probs = torch.exp(output).squeeze(0).cpu().numpy()
-    return {class_names[i]: float(probs[i]) for i in range(len(class_names))}
 
-# launch gradio
+# PREDICT (FIXED LOGIC)
+
+
+def predict(image):
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    img = Image.fromarray(gray)
+
+    x = transform(img).unsqueeze(0).to(device)
+    x.requires_grad_(True)
+
+    with torch.no_grad():
+        out = model(x)
+        probs = torch.exp(out)[0]
+
+    pred_idx = torch.argmax(probs).item()
+    conf = float(probs[pred_idx])
+
+    output_img = image.copy()
+
+    # ---------- NO ----------
+    if pred_idx == NO_INDEX:
+        return output_img, {
+            "no": conf,
+            "yes": 1.0 - conf
+        }
+
+    # ---------- YES ----------
+    cam = gradcam.generate(x, YES_INDEX)
+    cam = cam.squeeze().detach().cpu().numpy()
+    cam = cv2.resize(cam, (image.shape[1], image.shape[0]))
+
+    #  Percentile-based threshold 
+    cam_norm = cam / cam.max()
+    thr = np.percentile(cam_norm, 90)   
+    mask = (cam_norm >= thr).astype(np.uint8) * 255
+
+    contours, _ = cv2.findContours(
+        mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
+    )
+
+    if contours:
+        x0, y0, w, h = cv2.boundingRect(max(contours, key=cv2.contourArea))
+
+        #  Adaptive shrink 
+        H, W = image.shape[:2]
+        area_ratio = (w * h) / (H * W)
+
+        if area_ratio > 0.2:
+            shrink = 0.4
+        else:
+            shrink = 0.75
+
+        cx = x0 + w // 2
+        cy = y0 + h // 2
+        w = int(w * shrink)
+        h = int(h * shrink)
+
+        x0 = max(cx - w // 2, 0)
+        y0 = max(cy - h // 2, 0)
+
+        cv2.rectangle(
+            output_img,
+            (x0, y0),
+            (x0 + w, y0 + h),
+            (255, 0, 0),
+            3
+        )
+
+    return output_img, {
+        "yes": conf,
+        "no": 1.0 - conf
+    }
+
+
+# GRADIO
+
+
 gr.Interface(
     fn=predict,
-    inputs=gr.Image(type="numpy", image_mode="L"),
-    outputs=gr.Label(num_top_classes=len(class_names)),
-    title="Brain Tumor Classifier (EfficientNet + Quantum Layer)",
-    description="Upload grayscale MRI brain images for classification."
+    inputs=gr.Image(type="numpy"),
+    outputs=[
+        gr.Image(type="numpy", label="Tumor Localization"),
+        gr.Label(label="Tumor Detection")
+    ],
+    title="Brain Tumour Detection using QCNN",
 ).launch()
